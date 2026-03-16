@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Dearest Bhavna 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
+    <style>
+        :root { --romantic-pink: #ff85a1; --gold: #f9d976; --dark-velvet: #0a0a0a; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--dark-velvet); color: #fff; font-family: 'Montserrat', sans-serif; overflow: hidden; height: 100vh; }
+
+        /* Start Screen */
+        #loader {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #start-btn {
+            padding: 18px 45px; border-radius: 50px; border: 1px solid var(--romantic-pink);
+            background: transparent; color: var(--romantic-pink); font-size: 1.1rem;
+            cursor: pointer; transition: 0.5s; font-family: 'Montserrat', sans-serif;
+            letter-spacing: 4px; text-transform: uppercase;
+        }
+        #start-btn:hover { background: var(--romantic-pink); color: #000; box-shadow: 0 0 30px var(--romantic-pink); }
+
+        canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+        
+        .content {
+            position: relative; z-index: 10; height: 100vh; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; opacity: 0; transition: 2.5s ease; padding: 30px;
+        }
+
+        .bhavna-name { 
+            font-family: 'Great Vibes', cursive; font-size: clamp(5rem, 15vw, 8rem); 
+            color: var(--romantic-pink); text-shadow: 0 0 30px rgba(255,133,161,0.4); 
+            margin-bottom: -10px;
+        }
+        
+        .romantic-para {
+            max-width: 650px; font-size: 1.15rem; line-height: 1.9; color: #f0f0f0;
+            margin: 25px 0; font-style: italic; font-weight: 200;
+            letter-spacing: 0.5px;
+        }
+
+        /* Interactive Cake Area */
+        .cake-section { position: relative; margin-top: 40px; cursor: pointer; }
+        .cake-emoji { font-size: 90px; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2)); }
+        
+        .flame {
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            width: 16px; height: 28px; background: radial-gradient(#fff, #ffcc00, #ff6600);
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 25px #ffcc00, 0 0 45px #ff4400;
+            animation: flicker 0.1s infinite alternate;
+        }
+        @keyframes flicker { 
+            0% { transform: translateX(-50%) scale(1) rotate(-1deg); opacity: 0.9; } 
+            100% { transform: translateX(-50%) scale(1.15) rotate(1deg); opacity: 1; } 
+        }
+        
+        #wish-message { 
+            display: none; font-family: 'Dancing Script'; font-size: 3.5rem; 
+            color: var(--gold); margin-top: 25px; text-shadow: 0 0 15px var(--gold);
+            animation: slideUp 1.5s ease-out;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        #music-note { position: fixed; bottom: 40px; right: 40px; font-size: 1.5rem; opacity: 0.4; z-index: 100; }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <button id="start-btn" onclick="igniteMagic()">Enter Your Surprise, Bhavna</button>
+    </div>
+
+    <canvas id="visuals"></canvas>
+
+    <div class="content" id="main-content">
+        <h1 class="bhavna-name">Bhavna</h1>
+        
+        <div class="romantic-para">
+            "Dearest Bhavna, you are the most beautiful piece of art I have ever witnessed. In the gallery of my life, you are the masterpiece that takes my breath away every single day. You aren't just my girlfriend; you are my peace, my home, and my favorite mystery. On this special day, I want you to know that as long as I breathe, my heart will only beat for you. Happy Birthday to the girl who changed my world forever." 💖✨
+        </div>
+
+        <div class="cake-section">
+            <div class="flame" id="flame-element"></div>
+            <div class="cake-emoji">🎂</div>
+        </div>
+        <div id="wish-message">Make a Wish, My Love! 💌</div>
+    </div>
+
+    <audio id="romantic-audio" loop><source src="aud.mp3" type="audio/mpeg"></audio>
+    <div id="music-note">🎶</div>
+
+    <script>
+        const canvas = document.getElementById('visuals');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let magicStarted = false;
+        let isBlown = false;
+
+        function igniteMagic() {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.opacity = '1';
+                document.getElementById('romantic-audio').play();
+                initParticles();
+                startMic();
+                magicStarted = true;
+            }, 1200);
+        }
+
+        class Heart {
+            constructor(isExplosion = false) {
+                this.isExplosion = isExplosion;
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 500;
+                this.size = Math.random() * (this.isExplosion ? 25 : 12) + 5;
+                this.speed = Math.random() * (this.isExplosion ? 6 : 1.5) + 0.5;
+                this.opacity = Math.random() * 0.7 + 0.2;
+                this.color = Math.random() > 0.3 ? '#ff85a1' : '#ffffff';
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -50) this.reset();
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.font = `${this.size}px Arial`;
+                ctx.fillText('❤️', this.x, this.y);
+            }
+        }
+
+        function initParticles() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            for(let i=0; i<60; i++) particles.push(new Heart(false));
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        async function startMic() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyzer = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(stream);
+                analyzer.fftSize = 256;
+                source.connect(analyzer);
+                const dataArray = new Uint8Array(analyzer.frequencyBinCount);
+
+                function detectBlow() {
+                    if (isBlown) return;
+                    analyzer.getByteFrequencyData(dataArray);
+                    let sum = dataArray.reduce((a, b) => a + b);
+                    let average = sum / dataArray.length;
+
+                    // High sensitivity for blowing (adjusted to 50)
+                    if (average > 50) {
+                        isBlown = true;
+                        document.getElementById('flame-element').style.display = 'none';
+                        document.getElementById('wish-message').style.display = 'block';
+                        // Explosion of 250+ hearts
+                        for(let i=0; i<250; i++) particles.push(new Heart(true));
+                    }
+                    requestAnimationFrame(detectBlow);
+                }
+                detectBlow();
+            } catch (err) {
+                console.log("Mic blocked by browser. Ask her to click the cake instead!");
+                // Backup: Click the cake to blow candle
+                document.querySelector('.cake-section').onclick = () => {
+                    if(!isBlown) {
+                        isBlown = true;
+                        document.getElementById('flame-element').style.display = 'none';
+                        document.getElementById('wish-message').style.display = 'block';
+                        for(let i=0; i<250; i++) particles.push(new Heart(true));
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
